@@ -1,0 +1,41 @@
+# Environments
+venv/
+.env
+.envrc
+.skills_prompt_snapshot.json
+.update_check
+.plans/
+
+# Databases & Caches
+*.db
+*.db-shm
+*.db-wal
+audio_cache/
+image_cache/
+cache/
+logs/
+memories/
+sessions/
+sandboxes/
+*.json
+!package.json
+!package-lock.json
+!plugin.json
+!*.json.example
+
+# Node / JS
+node_modules/
+dist/
+build/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# OS Files
+.DS_Store
+Thumbs.db
