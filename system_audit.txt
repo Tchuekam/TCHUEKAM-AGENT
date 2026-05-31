@@ -1,0 +1,99 @@
+================================================================================
+TCHUEKAM SOVEREIGN PLATFORM - SYSTEM AUDIT REPORT
+================================================================================
+Report Title: TCHUEKAM Code Assistant in Google One AI Pro
+Visual Response Identity: TCHUEKAM CLI
+Inventor: TCHUEKAM Loic Rostand
+Authoritative Creative Agency: GIANTECT EMPIRE
+================================================================================
+
+1. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------
+This document details a technical static code audit of the TCHUEKAM Sovereign Agent Platform front-end (TchuekamUI monorepo). The platform runs on a split architecture: an Electron desktop client shell acting as an RPC interface, a local Node-based headless static server (@tchuekamlr/web-host), and a compiled high-performance backend core (aioncore) executing SQLite database queries, filesystem hooks, and agent pipelines.
+
+The audit has successfully identified:
+- Two critical security vulnerabilities (P1) in the communication and authentication layer.
+- One critical subprocess cleanup risk under Windows systems.
+- Visual and typographical enhancements required to align with the authoritative "Dark Power" creative direction.
+
+================================================================================
+2. CRITICAL SECURITY VULNERABILITIES (P1)
+--------------------------------------------------------------------------------
+
+VULNERABILITY #1: CSRF PROTECTION BYPASSED / MOCKED OUT IN WEBUI MODE
+- Component Location: packages/desktop/src/renderer/hooks/context/AuthContext.tsx
+- Risk Class: Cross-Site Request Forgery (CSRF) -> Session Takeover & State Mutation
+- Threat Mechanics:
+  In the current revision, CSRF token validation mechanisms are stubbed out as no-ops for compatibility:
+  
+  const withCsrfToken = (data) => data;
+  const hasValidCsrfToken = () => true;
+  const clearCookie = (_name, _path) => {};
+  
+  If the platform is configured to run in WebUI mode (--webui switch) with remote access enabled (allowRemote = true), or if it runs on a user's machine while they browse the web, this stub leaves the system completely exposed. An external attacker can execute state-changing actions by tricking the browser into sending cross-origin requests to "/login" or other stateful routes. This is a severe threat to operational integrity.
+- Immediate Remediation: Re-enable native CSRF tokens in the static server proxy, generate an encrypted session cookie, and validate that every state-modifying HTTP request carries a header token matched against the session secret.
+
+VULNERABILITY #2: UNAUTHENTICATED LOCAL RPC BACKEND REST & WEBSOCKET INTERFACES
+- Component Location: packages/desktop/src/common/adapter/httpBridge.ts
+- Risk Class: Cross-Origin Request Forgery / Local Privilege Escalation -> Remote Code Execution (RCE)
+- Threat Mechanics:
+  All communications from the React renderer client to the aioncore backend are routed over standard HTTP (fetch) or WebSockets using a dynamically selected loopback port:
+  
+  const url = `${getBaseUrl()}${path}`;
+  const response = await fetch(url, { method, headers, body });
+  
+  Crucially, no authorization header, API key, or signing token is injected into these requests. Because there is no authentication between the GUI shell and the loopback daemon:
+  1. Any program running locally can scan the port space and execute arbitrary commands directly on the backend.
+  2. Malicious websites loaded in the user's web browser can perform port-scanning attacks against 127.0.0.1 and dispatch blind POST requests targeting endpoints like "/api/fs/write" (writing arbitrary files to disk) or "/api/shell/open-folder-with" / "/api/shell/open-file" (executing host binary trees). While CORS restricts standard cross-origin reads, it does not prevent all cross-origin write requests (blind requests), leaving the system exposed to Remote Code Execution.
+- Immediate Remediation: Generate a cryptographically secure random API key during backendManager.start(), pass this key as a command-line flag or environment variable to the aioncore binary, and require the Electron preload script to inject it into all outgoing HTTP headers and WebSocket handshake queries (Authorization: Bearer <token>). Reject all requests without a valid token at the backend boundary.
+
+================================================================================
+3. ARCHITECTURAL & STABILITY RISKS
+--------------------------------------------------------------------------------
+
+RISK #3: SUBPROCESS MEMORY & THREAD LEAKAGE UNDER WINDOWS FORCED EXITS
+- Component Location: packages/web-host/src/backend-launcher.ts, packages/desktop/src/process/startup/quitCleanup.ts
+- Risk Class: Orphaned Subprocesses -> Memory Leakage & SQLite File Locks
+- Threat Mechanics:
+  When shutting down, Electron depends on the synchronous execution of process.on('exit') to terminate aioncore. Under Windows, SIGKILL maps to TerminateProcess(), which only halts the parent process (aioncore.exe). Any downstream subprocesses spawned by aioncore (such as local Python interpreter runtimes executing custom skills, indexers, or tools) will not be killed recursively. They remain active in memory as orphans, causing memory consumption and locking SQLite databases (aionui-backend.db), which blocks future launches.
+- Immediate Remediation: Implement Windows-native Job Objects or spawn the child process with { detached: true } and utilize taskkill command arrays (taskkill /F /T /PID <pid>) to recursively kill the entire process tree on shutdown.
+
+RISK #4: FALLBACK PORT DRIFT IN MAIN PROCESS CONFIG ACCESSORS
+- Component Location: packages/desktop/src/common/config/configService.ts
+- Risk Class: Request Timeouts -> Main Process Boot Deadlocks
+- Threat Mechanics:
+  The frontend configService falls back to port 13400 when window.__backendPort is missing. In Electron mode, the main process initializes its own storage mapping. If any utility in the main process attempts to read configurations before exposing the port dynamically (via the random port generation), it will issue requests to port 13400. Because the server is listening on a random port (e.g. 58921), these configuration calls fail with ECONNREFUSED.
+- Immediate Remediation: Replace the static fallback port with a dynamic getter that polls the active backendManager.port directly when executed inside the main process context.
+
+================================================================================
+4. VISUAL & AESTHETIC AUDIT
+--------------------------------------------------------------------------------
+To satisfy the requirements of the TCHUEKAM Sovereign Agent Platform creative directive (the "Dark Power" aesthetic), the visual system must appear extremely premium, dark, high-contrast, and technical.
+
+AESTHETIC STATUS:
+1. Typography Deficiencies:
+   The HTML template "index.html" does not import any premium web fonts. It defaults to the generic browser sans-serif stack, which degrades the premium visual design.
+2. Branding Contrast Verification:
+   The HSL theme definitions in "default-color-scheme.css" are robust and highly compliant. The use of deep dark obsidian (#030306) as a background combined with toxic neon emerald green (#00e676) for primary interactive controls establishes an authoritative, high-contrast digital workspace.
+3. Animations Check:
+   Micro-animations and transitions are cleanly defined. Keyframe breathing effects (e.g., team-tab-breathe) and linear shimmers in skeletons prevent layout jitters.
+
+REMEDIATION:
+1. Import Outfit Google Font: Inject the premium font declaration into index.html:
+   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+2. Override Stylesheet Stack: Declare font-family: 'Outfit', sans-serif; at the root of base.css to unify the system text layouts.
+
+================================================================================
+5. RECONCILIATION & UPDATE FLOW
+--------------------------------------------------------------------------------
+The project root contains "update.bat", designed by Giantect Empire. When client environments run "update.bat":
+1. It executes `git pull origin main` to pull latest changes from the secure GitHub repository.
+2. It synchronizes dependencies using `uv sync`.
+3. It re-obfuscates and compiles cli.py into binary format using `pyarmor` or `nuitka`.
+4. It copies the compiled secure binaries into the Electron application directory (TchuEkamUI\resources\bundled-engine), immediately updating all client applications dynamically.
+
+By committing and pushing this audit file to GitHub, all developers and deployed platform instances running "update.bat" will automatically synchronize their local repositories, ensuring complete alignment across the secure distribution network.
+
+================================================================================
+TCHUEKAM CLI — AUDIT COMPLETE. DATA SHIELD IN PLACE.
+================================================================================
