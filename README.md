@@ -49,12 +49,12 @@ TCHUEKAM compiles and executes five native corporate capabilities entirely on lo
 
 ## 3. Technology Stack & Workspace Structure
 The codebase is structured into clean modular layers:
-* `hermes-agent/app/`: The Python core processor running the main agent orchestration loop.
+* `tchuekam-agent/app/`: The Python core processor running the main agent orchestration loop.
   * `tools/`: Atomic system controllers (database crawling, terminal execution, filesystem operations, memory graphs).
   * `agent/`: State models, prompt assembly scripts, and safety locks.
   * `skills/`: Specialist instruction modules for specific tasks.
-* `Hermes/`: Node.js Slack / chat gateway connector bridging the localized engine with enterprise messaging environments.
-* `~/.hermes/` (or `$HERMES_HOME`): Secure, local metadata persistence vault holding custom SQLite indexes and session memories entirely offline.
+* `TchuEkaM/`: Node.js Slack / chat gateway connector bridging the localized engine with enterprise messaging environments.
+* `~/.tchuekam/` (or `$TCHUEKAM_HOME`): Secure, local metadata persistence vault holding custom SQLite indexes and session memories entirely offline.
 
 ---
 
@@ -63,7 +63,7 @@ To initialize TCHUEKAM in a new local environment:
 
 1. **Verify Python 3.11** and compile the virtual environment:
    ```powershell
-   cd hermes-agent/app
+   cd tchuekam-agent/app
    uv venv --python 3.11
    uv sync
    ```

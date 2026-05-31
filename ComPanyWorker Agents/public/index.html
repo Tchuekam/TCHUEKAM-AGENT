@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIANTECH EMPIRE - SCRAPER CONTROL</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Scanline effect -->
+  <div class="scanlines"></div>
+
+  <!-- Main Navigation Header -->
+  <header>
+    <div class="logo">GIANTECH EMPIRE</div>
+    <div class="agent-tag">SYSTEM / AGENT: [SCRAPER]</div>
+  </header>
+
+  <main>
+    <!-- Left column: Controls and Live Telemetry -->
+    <section class="left-panel">
+      <div class="panel-header">
+        <span class="panel-num">01 —</span>
+        <h2>COMMAND TERMINAL</h2>
+      </div>
+
+      <!-- Scraper configuration form -->
+      <form id="scraperForm" class="control-card">
+        <div class="form-group">
+          <label for="scraperSource">TARGET SCRAPE REGISTRY</label>
+          <select id="scraperSource">
+            <option value="maps">Google Maps Playwright Scraper</option>
+            <option value="directory">African Directory Scraper</option>
+            <option value="linkedin">LinkedIn/Apollo Search parser</option>
+            <option value="all">Consolidated Crawler (All Sources)</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="searchQuery">SEARCH KEYWORD</label>
+            <input type="text" id="searchQuery" placeholder="e.g. Restaurants, Hotels, Tech Agency" required>
+          </div>
+          <div class="form-group">
+            <label for="searchLocation">LOCATION</label>
+            <input type="text" id="searchLocation" placeholder="e.g. Yaoundé, Douala, New York" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="scrapeLimit">PROSPECT LIMIT</label>
+            <input type="number" id="scrapeLimit" min="1" max="100" value="10">
+          </div>
+          <button type="submit" id="submitBtn" class="btn btn-primary">LAUNCH HARVEST ENGINE</button>
+        </div>
+      </form>
+
+      <!-- Live Terminal Console -->
+      <div class="panel-header" style="margin-top: 24px;">
+        <span class="panel-num">02 —</span>
+        <h2>TELEMETRY log</h2>
+      </div>
+      <div class="terminal-container">
+        <div class="terminal-bar">
+          <span class="term-dot red"></span>
+          <span class="term-dot yellow"></span>
+          <span class="term-dot green"></span>
+          <span class="term-title">live_logs@giantect.io:~</span>
+        </div>
+        <div id="terminalBody" class="terminal-body">
+          <div class="log-line text-cyan">[SYS] Control dashboard initialized. Ready for operations.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right column: Leads database and queues -->
+    <section class="right-panel">
+      <div class="panel-header">
+        <span class="panel-num">03 —</span>
+        <h2>HARVESTED LEADS</h2>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="leads-toolbar">
+        <button id="refreshBtn" class="btn btn-secondary">REFRESH DATABASE</button>
+        <a href="/api/export" id="exportBtn" class="btn btn-secondary">EXPORT CSV</a>
+        <button id="clearBtn" class="btn btn-danger">PURGE LEADS</button>
+      </div>
+
+      <!-- Leads Grid Table -->
+      <div class="leads-container">
+        <table class="leads-table">
+          <thead>
+            <tr>
+              <th>NAME</th>
+              <th>PRIORITY</th>
+              <th>CATEGORY</th>
+              <th>CONTACT DETAILS</th>
+              <th>LOCATION</th>
+              <th>SOURCE</th>
+              <th>OUTREACH MESSAGE</th>
+            </tr>
+          </thead>
+          <tbody id="leadsBody">
+            <tr>
+              <td colspan="7" class="text-center" style="opacity: 0.5; padding: 40px 0;">
+                No lead coordinates registered yet. Trigger a search to hydrate database.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-left">GIANTECH EMPIRE © 2026. ALL OPERATING AGENTS ACTIVE.</div>
+    <div class="footer-right">BUILT WITH THE SUPERPOWERS OF TCHUEKAM</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

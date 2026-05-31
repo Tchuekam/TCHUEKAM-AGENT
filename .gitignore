@@ -39,3 +39,10 @@ __pycache__/
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Huge builds and frameworks
+TchuEkamUI/
+TchuekamUI-main/
+my logo.jpg
+data/
+
