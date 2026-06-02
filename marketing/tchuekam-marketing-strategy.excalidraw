@@ -1,0 +1,616 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "tchuekam-agent",
+  "elements": [
+    {
+      "type": "rectangle",
+      "id": "bg_zone",
+      "x": 0,
+      "y": 0,
+      "width": 1600,
+      "height": 900,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roughness": 1,
+      "opacity": 100
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "x": 500,
+      "y": 20,
+      "text": "STRATEGIE MARKETING TCHUEKAM",
+      "fontSize": 32,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "originalText": "STRATEGIE MARKETING TCHUEKAM",
+      "autoResize": true
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "x": 520,
+      "y": 60,
+      "text": "L'IA agentique Camerounaise - hors-ligne, sans abonnement",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "strokeColor": "#757575",
+      "textAlign": "center",
+      "originalText": "L'IA agentique Camerounaise - hors-ligne, sans abonnement",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "unified_msg",
+      "x": 450,
+      "y": 100,
+      "width": 700,
+      "height": 70,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#d0bfff",
+      "fillStyle": "solid",
+      "boundElements": [
+        {
+          "id": "t_unified_msg",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t_unified_msg",
+      "x": 455,
+      "y": 110,
+      "text": "MESSAGE UNIFIE: IA offline, en Francais, qui tourne sur votre materiel",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "unified_msg",
+      "originalText": "MESSAGE UNIFIE: IA offline, en Francais, qui tourne sur votre materiel",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "ch1",
+      "x": 50,
+      "y": 220,
+      "width": 280,
+      "height": 160,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "boundElements": [
+        {
+          "id": "t_ch1",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t_ch1",
+      "x": 55,
+      "y": 230,
+      "text": "PROSPECTION PHYSIQUE\n\nCible: PME, CTO, Dirigeants\nApproche: Demo portable hors-ligne\nObjectif: 10 visites/semaine",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "ch1",
+      "originalText": "PROSPECTION PHYSIQUE\n\nCible: PME, CTO, Dirigeants\nApproche: Demo portable hors-ligne\nObjectif: 10 visites/semaine",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "ch2",
+      "x": 440,
+      "y": 220,
+      "width": 280,
+      "height": 160,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "boundElements": [
+        {
+          "id": "t_ch2",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t_ch2",
+      "x": 445,
+      "y": 230,
+      "text": "COLD CALLS\n\nScript 30 secondes\nBut: prendre un RDV demo\nVolume: 50 appels/jour",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "ch2",
+      "originalText": "COLD CALLS\n\nScript 30 secondes\nBut: prendre un RDV demo\nVolume: 50 appels/jour",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "ch3",
+      "x": 830,
+      "y": 220,
+      "width": 280,
+      "height": 160,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#ffd8a8",
+      "fillStyle": "solid",
+      "boundElements": [
+        {
+          "id": "t_ch3",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t_ch3",
+      "x": 835,
+      "y": 230,
+      "text": "YOUTUBE\n\nPiliers: Demos, Comparaisons\n\"Built in Cameroon\"\n1 video/semaine\nC'est votre portfolio visible",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "ch3",
+      "originalText": "YOUTUBE\n\nPiliers: Demos, Comparaisons\n\"Built in Cameroon\"\n1 video/semaine\nC'est votre portfolio visible",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "ch4",
+      "x": 1220,
+      "y": 220,
+      "width": 320,
+      "height": 160,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#ffc9c9",
+      "fillStyle": "solid",
+      "boundElements": [
+        {
+          "id": "t_ch4",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t_ch4",
+      "x": 1225,
+      "y": 230,
+      "text": "LINKEDIN\n\n3 posts/semaine (technique,\ntech Cameroun, proof-of-work)\n30 connexions/jour\nDM sequence: valeur -> offre",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "ch4",
+      "originalText": "LINKEDIN\n\n3 posts/semaine (technique,\ntech Cameroun, proof-of-work)\n30 connexions/jour\nDM sequence: valeur -> offre",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "ch5",
+      "x": 635,
+      "y": 420,
+      "width": 320,
+      "height": 120,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#fff3bf",
+      "fillStyle": "solid",
+      "boundElements": [
+        {
+          "id": "t_ch5",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t_ch5",
+      "x": 640,
+      "y": 430,
+      "text": "FACEBOOK\n\nGroupes cibles (Startup237,\nInformaticiens Cameroun)\nVideos courtes 30s\nAds 1000 FCFA/jour test",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "ch5",
+      "originalText": "FACEBOOK\n\nGroupes cibles (Startup237,\nInformaticiens Cameroun)\nVideos courtes 30s\nAds 1000 FCFA/jour test",
+      "autoResize": true
+    },
+    {
+      "type": "arrow",
+      "id": "a_top_down1",
+      "x": 190,
+      "y": 380,
+      "width": 0,
+      "height": 120,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          120
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeStyle": "solid",
+      "roughness": 1
+    },
+    {
+      "type": "arrow",
+      "id": "a_top_down2",
+      "x": 580,
+      "y": 380,
+      "width": 0,
+      "height": 60,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          60
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeStyle": "solid",
+      "roughness": 1
+    },
+    {
+      "type": "arrow",
+      "id": "a_top_down3",
+      "x": 970,
+      "y": 380,
+      "width": 0,
+      "height": 60,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          60
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeStyle": "solid",
+      "roughness": 1
+    },
+    {
+      "type": "arrow",
+      "id": "a_top_down4",
+      "x": 1380,
+      "y": 380,
+      "width": 0,
+      "height": 120,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          120
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeStyle": "solid",
+      "roughness": 1
+    },
+    {
+      "type": "rectangle",
+      "id": "funnel_top",
+      "x": 200,
+      "y": 580,
+      "width": 1200,
+      "height": 50,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#c3fae8",
+      "fillStyle": "solid",
+      "boundElements": [
+        {
+          "id": "t_funnel_top",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t_funnel_top",
+      "x": 205,
+      "y": 585,
+      "text": "PHASE 1 (Sem 1-4): 4 videos YouTube | 30 connexions LinkedIn/jour | 50 appels/jour | 10 visites/sem | Facebook 3 groupes/sem",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "funnel_top",
+      "originalText": "PHASE 1 (Sem 1-4): 4 videos YouTube | 30 connexions LinkedIn/jour | 50 appels/jour | 10 visites/sem | Facebook 3 groupes/sem",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "funnel_mid",
+      "x": 250,
+      "y": 660,
+      "width": 1100,
+      "height": 50,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#c3fae8",
+      "fillStyle": "solid",
+      "boundElements": [
+        {
+          "id": "t_funnel_mid",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t_funnel_mid",
+      "x": 255,
+      "y": 665,
+      "text": "PHASE 2 (Sem 5-8): Videos comme preuve en rdv | Facebook Ads | Sequences DM LinkedIn actifs",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "funnel_mid",
+      "originalText": "PHASE 2 (Sem 5-8): Videos comme preuve en rdv | Facebook Ads | Sequences DM LinkedIn actifs",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "funnel_bottom",
+      "x": 350,
+      "y": 740,
+      "width": 900,
+      "height": 50,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#c3fae8",
+      "fillStyle": "solid",
+      "boundElements": [
+        {
+          "id": "t_funnel_bottom",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "t_funnel_bottom",
+      "x": 355,
+      "y": 745,
+      "text": "PHASE 3 (Sem 9+): Premier client -> etude de cas video -> arme de vente principale pour tous les canaux",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "funnel_bottom",
+      "originalText": "PHASE 3 (Sem 9+): Premier client -> etude de cas video -> arme de vente principale pour tous les canaux",
+      "autoResize": true
+    },
+    {
+      "type": "arrow",
+      "id": "a_funnel1",
+      "x": 800,
+      "y": 630,
+      "width": 0,
+      "height": 30,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          30
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeStyle": "solid",
+      "roughness": 1
+    },
+    {
+      "type": "arrow",
+      "id": "a_funnel2",
+      "x": 800,
+      "y": 710,
+      "width": 0,
+      "height": 30,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          30
+        ]
+      ],
+      "endArrowhead": "arrow",
+      "strokeStyle": "solid",
+      "roughness": 1
+    },
+    {
+      "type": "text",
+      "id": "legend_title",
+      "x": 120,
+      "y": 830,
+      "text": "LEGENDE CANAUX:",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "LEGENDE CANAUX:",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "leg1",
+      "x": 320,
+      "y": 830,
+      "width": 20,
+      "height": 20,
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid"
+    },
+    {
+      "type": "text",
+      "id": "t_leg1",
+      "x": 350,
+      "y": 830,
+      "text": "Physique",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "Physique",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "leg2",
+      "x": 480,
+      "y": 830,
+      "width": 20,
+      "height": 20,
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid"
+    },
+    {
+      "type": "text",
+      "id": "t_leg2",
+      "x": 510,
+      "y": 830,
+      "text": "Cold Calls",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "Cold Calls",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "leg3",
+      "x": 650,
+      "y": 830,
+      "width": 20,
+      "height": 20,
+      "backgroundColor": "#ffd8a8",
+      "fillStyle": "solid"
+    },
+    {
+      "type": "text",
+      "id": "t_leg3",
+      "x": 680,
+      "y": 830,
+      "text": "YouTube",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "YouTube",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "leg4",
+      "x": 790,
+      "y": 830,
+      "width": 20,
+      "height": 20,
+      "backgroundColor": "#ffc9c9",
+      "fillStyle": "solid"
+    },
+    {
+      "type": "text",
+      "id": "t_leg4",
+      "x": 820,
+      "y": 830,
+      "text": "LinkedIn",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "LinkedIn",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "leg5",
+      "x": 930,
+      "y": 830,
+      "width": 20,
+      "height": 20,
+      "backgroundColor": "#fff3bf",
+      "fillStyle": "solid"
+    },
+    {
+      "type": "text",
+      "id": "t_leg5",
+      "x": 960,
+      "y": 830,
+      "text": "Facebook",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "Facebook",
+      "autoResize": true
+    },
+    {
+      "type": "text",
+      "id": "footer",
+      "x": 120,
+      "y": 870,
+      "text": "Generated by TCHUEKAM - 2026",
+      "fontSize": 12,
+      "fontFamily": 1,
+      "strokeColor": "#757575",
+      "originalText": "Generated by TCHUEKAM - 2026",
+      "autoResize": true
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  }
+}

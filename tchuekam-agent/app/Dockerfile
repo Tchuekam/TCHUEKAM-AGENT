@@ -18,7 +18,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Non-root user for runtime; UID can be overridden via TCHUEKAM_UID at runtime
-RUN useradd -u 10000 -m -d /opt/data tchuekam
+RUN useradd -u 1000 -m -d /opt/data tchuekam
 
 COPY --chmod=0755 --from=gosu_source /gosu /usr/local/bin/
 COPY --chmod=0755 --from=uv_source /usr/local/bin/uv /usr/local/bin/uvx /usr/local/bin/
@@ -102,19 +102,16 @@ RUN cd web && npm run build && \
 # fail to load.  See tools/lazy_deps.py.
 USER root
 RUN chmod -R a+rX /opt/tchuekam && \
-    chown -R tchuekam:tchuekam /opt/tchuekam/.venv /opt/tchuekam/ui-tui /opt/tchuekam/node_modules
-# Start as root so the entrypoint can usermod/groupmod + gosu.
-# If TCHUEKAM_UID is unset, the entrypoint drops to the default tchuekam user (10000).
+    chown -R tchuekam:tchuekam /opt/tchuekam /opt/data
 
 # ---------- Link tchuekam-agent itself (editable) ----------
-# Deps are already installed in the cached layer above; `--no-deps` makes
-# this a fast (~1s) egg-link creation with no resolution or downloads.
+USER tchuekam
 RUN uv pip install --no-cache-dir --no-deps -e "."
 
 # ---------- Runtime ----------
 ENV TCHUEKAM_WEB_DIST=/opt/tchuekam/tchuekam_cli/web_dist
 ENV TCHUEKAM_HOME=/opt/data
 ENV PATH="/opt/data/.local/bin:${PATH}"
-RUN mkdir -p /opt/data
 VOLUME [ "/opt/data" ]
+# Run strictly as non-root to satisfy least-privilege execution
 ENTRYPOINT [ "/usr/bin/tini", "-g", "--", "/opt/tchuekam/docker/entrypoint.sh" ]

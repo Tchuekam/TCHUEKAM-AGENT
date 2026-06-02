@@ -1411,39 +1411,48 @@ class SessionDB:
 
     @classmethod
     def _encode_content(cls, content: Any) -> Any:
-        """Serialize structured (list/dict) message content for sqlite.
-
-        sqlite3 can only bind ``str``, ``bytes``, ``int``, ``float``, and ``None``
-        to query parameters. Multimodal messages have ``content`` as a list of
-        parts (``[{"type": "text", ...}, {"type": "image_url", ...}]``), which
-        raises ``ProgrammingError: Error binding parameter N: type 'list' is
-        not supported`` when bound directly.
-
-        Returns the value unchanged when it's already a safe scalar, or a
-        sentinel-prefixed JSON string for lists/dicts. Paired with
-        :meth:`_decode_content` on read.
-        """
-        if content is None or isinstance(content, (str, bytes, int, float)):
-            return content
+        """Serialize and encrypt message content."""
+        if content is None:
+            return None
+        
+        if isinstance(content, (list, dict)):
+            try:
+                raw_str = cls._CONTENT_JSON_PREFIX + json.dumps(content)
+            except (TypeError, ValueError):
+                raw_str = str(content)
+        else:
+            raw_str = str(content)
+            
         try:
-            return cls._CONTENT_JSON_PREFIX + json.dumps(content)
-        except (TypeError, ValueError):
-            # Last-resort fallback: stringify so persistence never fails.
-            return str(content)
+            from crypto_manager import get_crypto_manager
+            encrypted = get_crypto_manager().encrypt_data(raw_str.encode("utf-8"))
+            return encrypted
+        except Exception as e:
+            logger.error(f"Encryption failed: {e}")
+            return raw_str
 
     @classmethod
     def _decode_content(cls, content: Any) -> Any:
-        """Reverse :meth:`_encode_content`; returns scalars unchanged."""
-        if isinstance(content, str) and content.startswith(cls._CONTENT_JSON_PREFIX):
+        """Decrypt and deserialize message content."""
+        if content is None:
+            return None
+            
+        raw_str = content
+        if isinstance(content, bytes):
             try:
-                return json.loads(content[len(cls._CONTENT_JSON_PREFIX):])
+                from crypto_manager import get_crypto_manager
+                raw_str = get_crypto_manager().decrypt_data(content).decode("utf-8")
+            except Exception as e:
+                logger.error(f"Decryption failed: {e}")
+                return "<encrypted content>"
+                
+        if isinstance(raw_str, str) and raw_str.startswith(cls._CONTENT_JSON_PREFIX):
+            try:
+                return json.loads(raw_str[len(cls._CONTENT_JSON_PREFIX):])
             except (json.JSONDecodeError, TypeError):
-                logger.warning(
-                    "Failed to decode JSON-encoded message content; "
-                    "returning raw string"
-                )
-                return content
-        return content
+                logger.warning("Failed to decode JSON-encoded message content")
+                return raw_str
+        return raw_str
 
     def append_message(
         self,

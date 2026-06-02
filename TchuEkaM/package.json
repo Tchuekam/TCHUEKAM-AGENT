@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --exec ts-node --esm src/index.ts",
+    "dev:https": "NODE_EXTRA_CA_CERTS=../certs/tchuekam-cert.pem nodemon --exec ts-node --esm src/index.ts",
     "start": "tsc && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

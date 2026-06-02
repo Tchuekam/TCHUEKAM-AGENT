@@ -863,8 +863,8 @@ def create_mcp_server(event_bridge: Optional[EventBridge] = None) -> "FastMCP":
 # Entry point
 # ---------------------------------------------------------------------------
 
-def run_mcp_server(verbose: bool = False) -> None:
-    """Start the TchuEkaM MCP server on stdio."""
+def run_mcp_server(verbose: bool = False, use_tls: bool = False) -> None:
+    """Start the TchuEkaM MCP server on stdio or TLS/SSE."""
     if not _MCP_SERVER_AVAILABLE:
         print(
             "Error: MCP server requires the 'mcp' package.\n"
@@ -884,10 +884,26 @@ def run_mcp_server(verbose: bool = False) -> None:
     server = create_mcp_server(event_bridge=bridge)
 
     import asyncio
+    import ssl
 
     async def _run():
         try:
-            await server.run_stdio_async()
+            if use_tls:
+                cert_path = Path(__file__).parent.parent.parent / "certs" / "tchuekam-cert.pem"
+                key_path = Path(__file__).parent.parent.parent / "certs" / "tchuekam-key.pem"
+                
+                if not cert_path.exists() or not key_path.exists():
+                    raise FileNotFoundError("TLS certificates not found. Run generate_certs.sh first.")
+                
+                ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+                ssl_ctx.load_cert_chain(certfile=str(cert_path), keyfile=str(key_path))
+                ssl_ctx.minimum_version = ssl.TLSVersion.TLSv1_3
+                
+                logger.info("Starting MCP server over TLS (SSE)...")
+                # Using Starlette/SSE implementation standard in FastMCP if available
+                await server.run_sse_async(host="127.0.0.1", port=8000, ssl=ssl_ctx)
+            else:
+                await server.run_stdio_async()
         finally:
             bridge.stop()
 

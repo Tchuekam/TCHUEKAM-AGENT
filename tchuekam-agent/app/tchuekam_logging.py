@@ -209,6 +209,28 @@ def setup_logging(
 
     # Lazy import to avoid circular dependency at module load time.
     from agent.redact import RedactingFormatter
+    import json
+    import hmac
+    import hashlib
+
+    class SecureJSONFormatter(RedactingFormatter):
+        def format(self, record):
+            redacted_full_string = super().format(record)
+            log_obj = {
+                "level": record.levelname,
+                "logger": record.name,
+                "message": redacted_full_string
+            }
+            raw_json = json.dumps(log_obj)
+            try:
+                from crypto_manager import get_crypto_manager
+                key = get_crypto_manager()._key
+                signature = hmac.new(key, raw_json.encode('utf-8'), hashlib.sha256).hexdigest()
+                log_obj["signature"] = signature
+            except Exception:
+                log_obj["signature"] = "UNSIGNED"
+                
+            return json.dumps(log_obj)
 
     root = logging.getLogger()
 
@@ -219,7 +241,7 @@ def setup_logging(
         level=level,
         max_bytes=max_bytes,
         backup_count=backups,
-        formatter=RedactingFormatter(_LOG_FORMAT),
+        formatter=SecureJSONFormatter(_LOG_FORMAT),
     )
 
     # --- errors.log (WARNING+) — quick triage log --------------------------
@@ -229,7 +251,7 @@ def setup_logging(
         level=logging.WARNING,
         max_bytes=2 * 1024 * 1024,
         backup_count=2,
-        formatter=RedactingFormatter(_LOG_FORMAT),
+        formatter=SecureJSONFormatter(_LOG_FORMAT),
     )
 
     # --- gateway.log (INFO+, gateway component only) ------------------------
@@ -240,7 +262,7 @@ def setup_logging(
             level=logging.INFO,
             max_bytes=5 * 1024 * 1024,
             backup_count=3,
-            formatter=RedactingFormatter(_LOG_FORMAT),
+            formatter=SecureJSONFormatter(_LOG_FORMAT),
             log_filter=_ComponentFilter(COMPONENT_PREFIXES["gateway"]),
         )
 

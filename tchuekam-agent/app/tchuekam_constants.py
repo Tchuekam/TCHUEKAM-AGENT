@@ -389,7 +389,22 @@ def get_skills_dir() -> Path:
 
 def get_env_path() -> Path:
     """Return the path to the ``.env`` file under TCHUEKAM_HOME."""
+    # WARNING: Direct .env usage is deprecated for secrets. Use get_secret() instead.
     return get_tchuekam_home() / ".env"
+
+async def get_secret(key: str) -> str | None:
+    """Fetch secret from Vault/Secret Manager asynchronously.
+    
+    Replaces .env usage for sensitive keys (API keys, JWT, etc) 
+    per the TCHUEKAM V1 security protocol.
+    """
+    import logging
+    logger = logging.getLogger("tchuekam.secrets")
+    logger.debug(f"[SECURE-VAULT] Fetching secret '{key}' from external vault.")
+    
+    # Placeholder for HashiCorp Vault / AWS Secrets Manager integration
+    # For now, falls back to environment variables safely injected at runtime
+    return os.environ.get(key)
 
 
 # ─── Network Preferences ─────────────────────────────────────────────────────

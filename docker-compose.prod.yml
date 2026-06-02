@@ -1,0 +1,47 @@
+# TCHUEKAM V1 Security Protocol: Least-Privilege Orchestration
+version: "3.9"
+
+services:
+  agent:
+    build:
+      context: ./tchuekam-agent/app
+      dockerfile: Dockerfile
+    user: "1000:1000"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      - agent-data:/opt/data
+    environment:
+      - TCHUEKAM_HOME=/opt/data
+    networks:
+      - secure_backend
+
+  frontend:
+    build:
+      context: ./TchuEkaM
+    user: "1000:1000"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    environment:
+      - NODE_ENV=production
+    networks:
+      - secure_backend
+    ports:
+      - "443:443"
+
+networks:
+  secure_backend:
+    driver: bridge
+
+volumes:
+  agent-data:
