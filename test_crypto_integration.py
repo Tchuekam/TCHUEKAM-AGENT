@@ -5,7 +5,9 @@ import json
 app_dir = Path(r"d:\TCHUEKAMV1\tchuekam-agent\app")
 sys.path.insert(0, str(app_dir))
 
+# pyrefly: ignore [missing-import]
 from tchuekam_state import SessionDB
+# pyrefly: ignore [missing-import]
 from crypto_manager import get_crypto_manager
 
 def test_encryption():
@@ -35,6 +37,7 @@ def test_encryption():
     print("[+] SessionDB: String encryption/decryption works.")
 
     # 3. Test Logging Formatter
+    # pyrefly: ignore [missing-import]
     from tchuekam_logging import setup_logging
     import logging
     import tempfile

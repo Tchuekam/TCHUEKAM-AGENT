@@ -199,6 +199,13 @@ try:
 except Exception as e:
     logger.debug("Plugin discovery failed: %s", e)
 
+# Dynamic skill tool discovery
+try:
+    from tools.skills_tool import discover_skill_tools
+    discover_skill_tools()
+except Exception as e:
+    logger.debug("Skill tool discovery failed: %s", e)
+
 
 # =============================================================================
 # Backward-compat constants  (built once after discovery)

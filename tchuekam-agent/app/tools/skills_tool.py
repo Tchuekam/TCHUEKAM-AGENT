@@ -547,6 +547,107 @@ def _is_skill_disabled(name: str, platform: str = None) -> bool:
         return False
 
 
+def tool_result(data=None, **kwargs) -> str:
+    """Return a JSON result string for tool handlers.
+
+    Accepts a dict positional arg *or* keyword arguments (not both):
+
+    >>> tool_result(success=True, count=42)
+    '{"success": true, "count": 42}'
+    >>> tool_result({"key": "value"})
+    '{"key": "value"}'
+    """
+    if data is not None:
+        return json.dumps(data, ensure_ascii=False)
+    return json.dumps(kwargs, ensure_ascii=False)
+
+# ── Dynamic Skill Tools Injection ──────────────────────────────────────────
+
+def discover_skill_tools() -> None:
+    """Dynamically register all parsed SKILL.md files as standalone tools.
+    
+    This fulfills the 'Skill Bundles Implementation' by injecting declarative
+    skills as modular, context-aware tools rather than hardcoding capabilities.
+    """
+    from agent.skill_commands import scan_skill_commands, _load_skill_payload, _build_skill_message
+    from tools.registry import registry, tool_result, tool_error
+    from agent.skill_utils import parse_frontmatter
+    from pathlib import Path
+
+    commands = scan_skill_commands()
+    for cmd_key, info in commands.items():
+        name = info["name"]
+        description = info["description"]
+        slug = cmd_key.lstrip("/")
+        tool_name = f"run_skill_{slug.replace('-', '_')}"
+        skill_dir = info["skill_dir"]
+        skill_md_path = Path(info["skill_md_path"])
+        
+        # Build base schema for the model
+        parameters = {
+            "type": "object",
+            "properties": {
+                "user_instruction": {
+                    "type": "string",
+                    "description": "Optional specific instructions or context for running the skill.",
+                }
+            }
+        }
+        
+        # Read the frontmatter to see if there are custom parameters defined
+        try:
+            content = skill_md_path.read_text(encoding="utf-8")
+            frontmatter, _ = parse_frontmatter(content)
+            if "parameters" in frontmatter and isinstance(frontmatter["parameters"], dict):
+                # Merge custom parameters from frontmatter
+                custom_props = frontmatter["parameters"].get("properties", {})
+                parameters["properties"].update(custom_props)
+                
+                # Merge required array if any
+                if "required" in frontmatter["parameters"]:
+                    parameters["required"] = frontmatter["parameters"]["required"]
+        except Exception:
+            pass
+
+        schema = {
+            "name": tool_name,
+            "description": f"Execute the {name} skill. {description}",
+            "parameters": parameters
+        }
+        
+        def make_handler(s_dir, s_name):
+            def handler(args: dict, **kwargs) -> str:
+                task_id = kwargs.get("task_id")
+                # Remove base args so remaining args are custom parameters
+                user_instruction = args.pop("user_instruction", "")
+                
+                custom_args_str = ""
+                if args:
+                    custom_args_str = "\n\nProvided Custom Parameters:\n" + "\n".join(f"- {k}: {v}" for k, v in args.items())
+                
+                loaded = _load_skill_payload(s_dir, task_id=task_id)
+                if not loaded:
+                    return tool_error(f"Failed to load skill {s_name}")
+                
+                loaded_skill, skill_dir_obj, loaded_name = loaded
+                msg = _build_skill_message(
+                    loaded_skill,
+                    skill_dir_obj,
+                    f'[IMPORTANT: You are now executing the "{loaded_name}" skill. Follow its instructions strictly.]',
+                    user_instruction=user_instruction + custom_args_str,
+                    session_id=task_id,
+                )
+                return tool_result(success=True, output=msg)
+            return handler
+            
+        registry.register(
+            name=tool_name,
+            toolset="skills_tools",
+            schema=schema,
+            handler=make_handler(skill_dir, name),
+        )
+
+
 def _find_all_skills(*, skip_disabled: bool = False) -> List[Dict[str, Any]]:
     """Recursively find all skills in ~/.tchuekam/skills/ and external dirs.
 

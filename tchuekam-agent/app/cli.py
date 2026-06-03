@@ -366,7 +366,7 @@ def load_cli_config() -> Dict[str, Any]:
             "provider": "auto",
         },
         "terminal": {
-            "env_type": "local",
+            "env_type": "docker",
             "cwd": ".",  # "." is resolved to os.getcwd() at runtime
             "timeout": 60,
             "lifetime_seconds": 300,
@@ -544,7 +544,7 @@ def load_cli_config() -> Dict[str, Any]:
     # Non-local with placeholder: pop so terminal_tool uses its per-backend default.
     # Non-local with explicit path: keep as-is.
     _CWD_PLACEHOLDERS = (".", "auto", "cwd")
-    effective_backend = terminal_config.get("env_type", "local")
+    effective_backend = terminal_config.get("env_type", "docker")
 
     if effective_backend == "local":
         terminal_config["cwd"] = os.getcwd()
@@ -8370,6 +8370,8 @@ class TchuEkaMCLI:
             self._handle_agents_command()
         elif canonical == "background":
             self._handle_background_command(cmd_original)
+        elif canonical == "swe":
+            self._handle_swe_command(cmd_original)
         elif canonical == "queue":
             # Extract prompt after "/queue " or "/q "
             parts = cmd_original.split(None, 1)
@@ -8587,6 +8589,54 @@ class TchuEkaMCLI:
         
         return True
     
+    def _handle_swe_command(self, cmd: str):
+        """Handle /swe <prompt> — run a prompt through the autonomous MiniSWERunner loop.
+
+        Delegates the task to MiniSWERunner for a Closed-Loop Verification execution,
+        which runs Plan -> Act -> Verify loops.
+        """
+        parts = cmd.strip().split(maxsplit=1)
+        if len(parts) < 2 or not parts[1].strip():
+            _cprint("  Usage: /swe <task description>")
+            _cprint("  Example: /swe Fix the bug in auth_commands.py that causes crashes on empty input")
+            return
+
+        task_desc = parts[1].strip()
+        self._background_task_counter += 1
+        task_num = self._background_task_counter
+        task_id = f"swe_{datetime.now().strftime('%H%M%S')}_{uuid.uuid4().hex[:6]}"
+
+        _cprint(f"  🤖 Autonomous SWE Agent task #{task_num} started: \"{task_desc[:60]}{'...' if len(task_desc) > 60 else ''}\"")
+        _cprint(f"  Task ID: {task_id}")
+        _cprint("  The SWE Agent is running in the background. You can continue chatting.\n")
+
+        def run_swe():
+            try:
+                from mini_swe_runner import MiniSWERunner
+                runner = MiniSWERunner(
+                    env_type=CLI_CONFIG.get("terminal", {}).get("env_type", "local"),
+                    image=CLI_CONFIG.get("terminal", {}).get("docker_image", "python:3.11-slim"),
+                    cwd=os.getenv("TERMINAL_CWD", os.getcwd()),
+                    max_turns=30,
+                )
+                _cprint(f"  🤖 SWE Agent #{task_num} initialized environment...")
+                
+                result = runner.run_task(task_desc, task_id=task_id)
+                
+                # Report completion
+                output = f"\n  ✅ SWE Agent #{task_num} finished.\n"
+                output += f"  Status: {'Success' if result.get('success') else 'Failed'}\n"
+                output += f"  Result: {result.get('final_output')}\n"
+                _cprint(output)
+            except Exception as e:
+                import traceback
+                _cprint(f"\n  ❌ SWE Agent #{task_num} crashed: {e}\n{traceback.format_exc()}\n")
+
+        # Start the thread
+        t = threading.Thread(target=run_swe, name=f"SWERunner-{task_id}", daemon=True)
+        t.start()
+        return True
+
     def _handle_background_command(self, cmd: str):
         """Handle /background <prompt> — run a prompt in a separate background session.
 
