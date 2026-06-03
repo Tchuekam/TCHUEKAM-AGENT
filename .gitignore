@@ -45,4 +45,7 @@ TchuEkamUI/
 TchuekamUI-main/
 my logo.jpg
 data/
-
+.tchuekam/
+*.stl
+*.gif
+*.mp4
