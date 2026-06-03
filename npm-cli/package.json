@@ -1,0 +1,42 @@
+{
+  "name": "@tchuekam/cli",
+  "version": "1.0.0",
+  "description": "Tchuekam Sovereign Enterprise Intelligence Platform — CLI launcher",
+  "main": "./bin/launcher.js",
+  "bin": {
+    "tchuekam": "./bin/launcher.js"
+  },
+  "files": [
+    "bin",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "test": "node bin/launcher.js --version"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "execa": "^8.0.1",
+    "semver": "^7.6.0",
+    "open": "^10.0.4"
+  },
+  "keywords": [
+    "tchuekam",
+    "ai",
+    "agent",
+    "cli",
+    "enterprise",
+    "sovereign",
+    "workstation"
+  ],
+  "author": "Tchuekam Research <support@tchuekam.ai>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tchuekam/TCHUEKAM-AGENT.git"
+  },
+  "homepage": "https://github.com/Tchuekam/TCHUEKAM-AGENT#readme"
+}
