@@ -130,14 +130,23 @@ def _get_backend() -> ComputerUseBackend:
     global _backend
     with _backend_lock:
         if _backend is None:
-            backend_name = os.environ.get("TCHUEKAM_COMPUTER_USE_BACKEND", "cua").lower()
-            if backend_name in {"cua", "cua-driver", ""}:
+            # Determine backend based on environment variable or OS default
+            if sys.platform.startswith("win"):
+                default_backend = "windows"
+            else:
+                default_backend = "cua"
+            backend_name = os.environ.get("TCHUEKAM_COMPUTER_USE_BACKEND", default_backend).lower()
+            if backend_name == "windows":
+                from tools.computer_use.windows_backend import WindowsBackend
+                _backend = WindowsBackend()
+            elif backend_name in {"cua", "cua-driver", ""}:
                 from tools.computer_use.cua_backend import CuaDriverBackend
                 _backend = CuaDriverBackend()
             elif backend_name == "noop":  # pragma: no cover
                 _backend = _NoopBackend()
             else:
                 raise RuntimeError(f"Unknown TCHUEKAM_COMPUTER_USE_BACKEND={backend_name!r}")
+
             _backend.start()
         return _backend
 

@@ -63,6 +63,45 @@ except ModuleNotFoundError:
 
 import os
 import sys
+import getpass
+
+_orig_getpass = getpass.getpass
+
+def _secure_input(prompt: str = "Password: ", stream=None) -> str:
+    """Read password/token input safely, with dynamic paste-friendly fallback.
+
+    Under IDE terminals (VS Code, Cursor, PyCharm) or Git Bash/MSYS2 on Windows,
+    raw console APIs utilized by `getpass` completely block pasting or typing.
+    In those non-standard console sessions, we dynamically fallback to standard
+    input() so the user can easily paste or write API keys.
+    """
+    is_non_standard_win32 = False
+    if sys.platform == "win32":
+        if (
+            os.environ.get("TERM_PROGRAM") in ("vscode", "cursor")
+            or "PYCHARM_HOSTED" in os.environ
+            or "TERM" in os.environ  # Git Bash / MSYS2
+            or not sys.stdin.isatty()
+        ):
+            is_non_standard_win32 = True
+
+    if is_non_standard_win32:
+        sys.stdout.write("  (Note: Paste-friendly mode active; input will be visible)\n")
+        sys.stdout.flush()
+        try:
+            return input(prompt)
+        except (KeyboardInterrupt, EOFError):
+            return ""
+
+    try:
+        return _orig_getpass(prompt, stream=stream)
+    except Exception:
+        try:
+            return input(prompt)
+        except (KeyboardInterrupt, EOFError):
+            return ""
+
+getpass.getpass = _secure_input
 
 
 def _is_termux_startup_environment_fast() -> bool:

@@ -1509,7 +1509,24 @@ BROWSER_TOOL_SCHEMAS = [
                     "description": "The element reference from the snapshot (e.g., '@e5', '@e12')"
                 }
             },
-            "required": ["ref"]
+        }
+    },
+    {
+        "name": "browser_click_coords",
+        "description": "Click on an exact physical pixel coordinate (x, y) on the screen. Best used in conjunction with browser_vision to click elements that lack DOM refs.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "x": {
+                    "type": "integer",
+                    "description": "The X coordinate in pixels"
+                },
+                "y": {
+                    "type": "integer",
+                    "description": "The Y coordinate in pixels"
+                }
+            },
+            "required": ["x", "y"]
         }
     },
     {
@@ -2591,6 +2608,30 @@ def browser_click(ref: str, task_id: Optional[str] = None) -> str:
             "error": result.get("error", f"Failed to click {ref}")
         }
         return json.dumps(_copy_fallback_warning(response, result), ensure_ascii=False)
+
+
+def browser_click_coords(x: int, y: int, task_id: Optional[str] = None) -> str:
+    """Click on an exact physical pixel coordinate (x, y) on the screen."""
+    js_code = f"""
+    (function() {{
+        const el = document.elementFromPoint({x}, {y});
+        if (!el) return 'No element found at {x}, {y}';
+        
+        const events = ['mousedown', 'mouseup', 'click'];
+        events.forEach(ev => {{
+            const event = new MouseEvent(ev, {{
+                view: window,
+                bubbles: true,
+                cancelable: true,
+                clientX: {x},
+                clientY: {y}
+            }});
+            el.dispatchEvent(event);
+        }});
+        return 'Clicked ' + (el.tagName ? el.tagName.toLowerCase() : 'element') + ' at {x}, {y}';
+    }})();
+    """
+    return _browser_eval(js_code, task_id)
 
 
 def browser_type(ref: str, text: str, task_id: Optional[str] = None) -> str:
@@ -3757,6 +3798,14 @@ registry.register(
     handler=lambda args, **kw: browser_click(ref=args.get("ref", ""), task_id=kw.get("task_id")),
     check_fn=check_browser_requirements,
     emoji="👆",
+)
+registry.register(
+    name="browser_click_coords",
+    toolset="browser",
+    schema=_BROWSER_SCHEMA_MAP["browser_click_coords"],
+    handler=lambda args, **kw: browser_click_coords(x=args.get("x", 0), y=args.get("y", 0), task_id=kw.get("task_id")),
+    check_fn=check_browser_requirements,
+    emoji="🎯",
 )
 registry.register(
     name="browser_type",

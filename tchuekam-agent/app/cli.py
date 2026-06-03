@@ -8372,6 +8372,8 @@ class TchuEkaMCLI:
             self._handle_background_command(cmd_original)
         elif canonical == "swe":
             self._handle_swe_command(cmd_original)
+        elif canonical == "swarm":
+            self._handle_swarm_command(cmd_original)
         elif canonical == "queue":
             # Extract prompt after "/queue " or "/q "
             parts = cmd_original.split(None, 1)
@@ -8628,6 +8630,56 @@ class TchuEkaMCLI:
                 output += f"  Status: {'Success' if result.get('success') else 'Failed'}\n"
                 output += f"  Result: {result.get('final_output')}\n"
                 _cprint(output)
+            except Exception as e:
+                _cprint(f"\n  ❌ SWE Agent #{task_num} encountered a fatal error: {str(e)}")
+                traceback.print_exc()
+
+        threading.Thread(target=run_swe, daemon=True).start()
+        return True
+
+    def _handle_swarm_command(self, cmd: str):
+        """Handle /swarm <N> <prompt> — spawn N concurrent MiniSWERunner instances."""
+        parts = cmd.strip().split(maxsplit=2)
+        if len(parts) < 3 or not parts[1].isdigit() or not parts[2].strip():
+            _cprint("  Usage: /swarm <num_agents> <task description>")
+            _cprint("  Example: /swarm 10 Write 10 different sorting algorithms in 10 files")
+            return
+
+        num_agents = int(parts[1])
+        task_desc = parts[2].strip()
+        
+        # Build prompt list (we send the same master goal to each, or partition it if needed)
+        # For this MVP, we pass the same prompt but append an index so they do distinct subtasks if instructed.
+        prompts = [f"{task_desc} (You are Agent {i} of {num_agents}. Execute your slice of this task.)" for i in range(num_agents)]
+        
+        self._background_task_counter += 1
+        task_num = self._background_task_counter
+
+        _cprint(f"  🐝 Swarm #{task_num} initiated: {num_agents} agents sparking...")
+        _cprint(f"  Task: \"{task_desc[:60]}{'...' if len(task_desc) > 60 else ''}\"")
+        _cprint("  The Swarm is running in the background. You can continue chatting.\n")
+
+        def run_swarm():
+            try:
+                from swarm_manager import SwarmManager
+                manager = SwarmManager(
+                    num_agents=num_agents,
+                    env_type=CLI_CONFIG.get("terminal", {}).get("env_type", "local"),
+                    base_cwd=os.path.join(os.getenv("TERMINAL_CWD", os.getcwd()), ".swarm_tmp"),
+                )
+                results = manager.spark(prompts)
+                
+                # Report completion
+                successes = sum(1 for r in results if r.get("status") == "success")
+                output = f"\n  ✅ Swarm #{task_num} finished.\n"
+                output += f"  Status: {successes}/{num_agents} Agents Succeeded.\n"
+                _cprint(output)
+            except Exception as e:
+                _cprint(f"\n  ❌ Swarm #{task_num} encountered a fatal error: {str(e)}")
+                traceback.print_exc()
+
+        threading.Thread(target=run_swarm, daemon=True).start()
+        return True
             except Exception as e:
                 import traceback
                 _cprint(f"\n  ❌ SWE Agent #{task_num} crashed: {e}\n{traceback.format_exc()}\n")
