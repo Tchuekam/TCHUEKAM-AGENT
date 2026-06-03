@@ -8680,14 +8680,6 @@ class TchuEkaMCLI:
 
         threading.Thread(target=run_swarm, daemon=True).start()
         return True
-            except Exception as e:
-                import traceback
-                _cprint(f"\n  ❌ SWE Agent #{task_num} crashed: {e}\n{traceback.format_exc()}\n")
-
-        # Start the thread
-        t = threading.Thread(target=run_swe, name=f"SWERunner-{task_id}", daemon=True)
-        t.start()
-        return True
 
     def _handle_background_command(self, cmd: str):
         """Handle /background <prompt> — run a prompt in a separate background session.
